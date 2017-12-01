@@ -383,7 +383,7 @@ class XMODEM(object):
             _bytes.append(crc)
         return bytearray(_bytes)
 
-    def recv(self, stream, crc_mode=1, retry=16, timeout=60, delay=1, quiet=0):
+    def recv(self, stream, crc_mode=1, retry=16, timeout=60, delay=1, quiet=0, valid_cb=None):
         '''
         Receive a stream via the XMODEM protocol.
 
@@ -546,6 +546,8 @@ class XMODEM(object):
                     sequence = (sequence + 1) % 0x100
                     # get next start-of-header byte
                     char = self.getc(1, timeout)
+                    if valid_cb:
+                        valid_cb(len(data))
                     continue
 
             # something went wrong, request retransmission
